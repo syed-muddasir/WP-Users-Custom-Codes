@@ -1,0 +1,21 @@
+// Add custom column to Admin users list
+add_action('manage_users_columns', 'add_custom_users_columns', 10, 1 );
+function add_custom_users_columns( $columns ) {
+    $columns['photo_id'] = __('Photo ID');
+    return $columns;
+}
+
+// fetching the photo id
+add_filter('manage_users_custom_column',  'add_data_to_custom_users_columns', 10, 3);
+function add_data_to_custom_users_columns( $value, $column_name, $userid ) {
+    if ( 'photo_id' == $column_name ) {
+        if( get_user_meta( $userid, 'afreg_additional_3153', true )) {
+			$plugin_dir = get_site_url() . '/wp-content/plugins/user-registration-plugin-for-woocommerce/uploaded_files/';
+			$photoidfilename = get_user_meta( $userid, 'afreg_additional_3153', true );
+            $value = '<a target="_blank" href="'.$plugin_dir.$photoidfilename.'" style="box-shadow:0px 0px 5px rgba(0,0,0,0.25); font-weight: 600; border-radius: 5px; display: inline-block; padding: 10px; background: #eeeddd; color: #555;">Open Photo ID</a>';
+        } else {
+            $value = '<span class="na" style="color:grey;"><em>No Photo ID Found</em></span>';
+        }
+    }
+    return $value;
+}
